@@ -234,8 +234,6 @@ phpunit.xml
 pest.xml
 tsconfig.json
 vite.config.ts
-tailwind.config.js
-postcss.config.js
 package.json
 composer.json
 docker-compose.yml                   # Sail
@@ -742,7 +740,7 @@ These are the only third-party packages you should introduce without asking:
 
 **NPM:**
 - `react`, `react-dom`, `@inertiajs/react`, `typescript`
-- `tailwindcss`, `@tailwindcss/forms`, `postcss`, `autoprefixer`
+- `tailwindcss`, `@tailwindcss/vite` (Tailwind 4 Vite plugin — no PostCSS config needed)
 - `lucide-react`, `date-fns`, `recharts`
 - `laravel-echo`, `pusher-js`
 - `@sentry/react`

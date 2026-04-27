@@ -6,9 +6,9 @@
 
 ## 0. Stack recap
 
-- React 18 + TypeScript 5
-- Inertia.js v2 with `@inertiajs/react`
-- Tailwind CSS 3
+- React 19 + TypeScript 6
+- Inertia.js v3 with `@inertiajs/react`
+- Tailwind CSS 4
 - Vite for bundling
 - Forms: Inertia's `useForm`; validation piggy-backs on Laravel's Form Requests (server-side validation is canonical)
 - Icons: `lucide-react`
@@ -375,10 +375,10 @@ Cards:
 ## 11. Styling conventions
 
 - **Use Tailwind utility classes directly.** No `@apply` except in `resources/css/app.css` for truly global utilities.
-- **Colour tokens** come from `tailwind.config.js`:
-  - `brand` palette (50..900) — replaced once branding is decided
-  - `neutral` palette — grays for text and borders
-  - `success` / `warning` / `danger` — semantic
+- **Colour tokens** are defined in `resources/css/app.css` via `@theme {}` blocks (Tailwind 4 CSS-first config — no `tailwind.config.js`):
+  - `--color-brand-*` (50..900) — replaced once branding is decided
+  - `--color-neutral-*` — grays for text and borders
+  - `--color-success-*` / `--color-warning-*` / `--color-danger-*` — semantic
 - **Font**: system font stack at MVP (`font-sans`). Swap in a display font once branding is chosen.
 - No component library (no shadcn/ui, no Material). Hand-built primitives so they match the eventual brand.
 
@@ -388,7 +388,7 @@ Cards:
 - Mobile audience is one-handed, often outdoors, often one-task-and-close — better served by a differentiated, app-like aesthetic.
 - Trying to unify would drag one down to the other's constraints. Two surfaces, two design languages, both intentional.
 
-Do not share design tokens between the web's Tailwind config and the mobile `packages/ui/src/theme/tokens.ts`. They diverge on purpose.
+Do not share design tokens between the web's `@theme {}` CSS block and the mobile `packages/ui/src/theme/tokens.ts`. They diverge on purpose.
 
 **`DECISION REQUIRED: branding palette + typography`** — until resolved, use Tailwind defaults. Replace in one PR once decided.
 
@@ -415,6 +415,6 @@ Per-page `Suspense` not needed at MVP (no lazy routes).
 
 | # | Decision | Impact |
 |---|---|---|
-| 1 | Branding (colours, fonts, logo) | `tailwind.config.js` + `AuthLayout`. |
+| 1 | Branding (colours, fonts, logo) | `@theme {}` block in `app.css` + `AuthLayout`. |
 | 2 | Copy tone + final plan names | All user-facing strings — collate in `resources/js/lib/strings.ts` first so changes are one PR. |
 | 3 | Time-zone display strategy | Default to Australia/Perth; offer per-user pref (Phase 2). |

@@ -10,10 +10,10 @@
 |---|---|---|---|
 | Language | PHP | 8.3+ | Laravel 13 requirement. |
 | Backend framework | Laravel | 13.x | Operations-heavy CRUD, queues, auth, billing — Laravel is the right shape. |
-| Frontend bridge | Inertia.js | 2.x | Monolith speed, React ergonomics, no separate API-first SPA needed at MVP. |
-| Frontend library | React | 18.x | Reusable for mobile (React Native) later. |
-| Language (FE) | TypeScript | 5.x | Caught bugs pay for themselves within a week. |
-| Styling | Tailwind CSS | 3.x | Fast, consistent, zero CSS file maintenance. |
+| Frontend bridge | Inertia.js | 3.x | Monolith speed, React ergonomics, no separate API-first SPA needed at MVP. |
+| Frontend library | React | 19.x | Reusable for mobile (React Native) later. |
+| Language (FE) | TypeScript | 6.x | Caught bugs pay for themselves within a week. |
+| Styling | Tailwind CSS | 4.x | Fast, consistent, zero CSS file maintenance. |
 | Database | PostgreSQL | 16+ | Future-proof for geo (PostGIS) and analytics. |
 | Cache / session / queue | Redis | 7+ | Industry default with Laravel. |
 | Queue monitor | Laravel Horizon | latest | Dispatch is async; you need the dashboard from day one. |

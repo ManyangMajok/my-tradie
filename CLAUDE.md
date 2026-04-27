@@ -51,8 +51,8 @@ The docs live in `docs/` and are numbered:
 ## 4. Stack (locked)
 
 - **Backend:** Laravel 13 (PHP 8.3+)
-- **Frontend:** React 18 + Inertia.js v2 + TypeScript
-- **Styling:** Tailwind CSS
+- **Frontend:** React 19 + Inertia.js v3 + TypeScript 6
+- **Styling:** Tailwind CSS 4
 - **Database:** PostgreSQL 16+
 - **Cache/Queue:** Redis 7+
 - **WebSockets:** Laravel Reverb (first-party)
