@@ -93,8 +93,8 @@ APP_URL=https://staging.tradify.au
 APP_TIMEZONE=UTC
 
 # Staging DB + Redis (local)
-DB_DATABASE=tradify_staging
-DB_USERNAME=tradify_staging
+DB_DATABASE=my_tradie_staging
+DB_USERNAME=my_tradie_staging
 DB_PASSWORD=<staging-db-password>
 
 REDIS_PASSWORD=<staging-redis-password>

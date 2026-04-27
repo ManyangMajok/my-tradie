@@ -201,12 +201,12 @@ sudo apt install -y postgresql-16
 Create the database and user:
 ```bash
 sudo -u postgres psql <<EOF
-CREATE DATABASE tradify;
-CREATE USER tradify WITH ENCRYPTED PASSWORD 'CHANGE_ME_TO_STRONG_PASSWORD';
-GRANT ALL PRIVILEGES ON DATABASE tradify TO tradify;
-\c tradify
-GRANT ALL ON SCHEMA public TO tradify;
-ALTER DATABASE tradify OWNER TO tradify;
+CREATE DATABASE my_tradie;
+CREATE USER my_tradie WITH ENCRYPTED PASSWORD 'CHANGE_ME_TO_STRONG_PASSWORD';
+GRANT ALL PRIVILEGES ON DATABASE my_tradie TO my_tradie;
+\c my_tradie
+GRANT ALL ON SCHEMA public TO my_tradie;
+ALTER DATABASE my_tradie OWNER TO my_tradie;
 EOF
 ```
 
@@ -321,8 +321,8 @@ APP_TIMEZONE=UTC
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_DATABASE=tradify
-DB_USERNAME=tradify
+DB_DATABASE=my_tradie
+DB_USERNAME=my_tradie
 DB_PASSWORD=<the password from §2.4>
 
 REDIS_HOST=127.0.0.1
@@ -641,7 +641,7 @@ RCLONE_REMOTE="tradify-backups:backups"   # change to your rclone remote
 mkdir -p "$BACKUP_DIR"
 
 # Dump Postgres
-PGPASSWORD=YOUR_DB_PASSWORD pg_dump -h 127.0.0.1 -U tradify tradify \
+PGPASSWORD=YOUR_DB_PASSWORD pg_dump -h 127.0.0.1 -U my_tradie my_tradie \
     | gzip > "$BACKUP_DIR/db-$DATE.sql.gz"
 
 # Tar private storage
@@ -687,10 +687,10 @@ rclone copy tradify-backups:backups/db-<DATE>.sql.gz /tmp/
 
 # Decompress and restore to a test database
 gunzip /tmp/db-<DATE>.sql.gz
-sudo -u postgres psql -c "CREATE DATABASE tradify_restore_test;"
-PGPASSWORD=YOUR_DB_PASSWORD psql -h 127.0.0.1 -U tradify -d tradify_restore_test < /tmp/db-<DATE>.sql
-sudo -u postgres psql -d tradify_restore_test -c "SELECT COUNT(*) FROM users;"
-sudo -u postgres psql -c "DROP DATABASE tradify_restore_test;"
+sudo -u postgres psql -c "CREATE DATABASE my_tradie_restore_test;"
+PGPASSWORD=YOUR_DB_PASSWORD psql -h 127.0.0.1 -U my_tradie -d my_tradie_restore_test < /tmp/db-<DATE>.sql
+sudo -u postgres psql -d my_tradie_restore_test -c "SELECT COUNT(*) FROM users;"
+sudo -u postgres psql -c "DROP DATABASE my_tradie_restore_test;"
 ```
 
 If that worked, backups are real.
@@ -812,7 +812,7 @@ Final smoke tests before declaring the VPS ready:
 - [ ] `sudo systemctl status nginx php8.3-fpm postgresql redis-server` all `active`
 - [ ] `sudo ufw status` shows 22, 80, 443 only (no 5432 or 6379)
 - [ ] SSH as root rejected; SSH as `deploy` works with key auth
-- [ ] `psql` as `tradify` user succeeds with password
+- [ ] `psql` as `my_tradie` user succeeds with password
 - [ ] `redis-cli -a PASSWORD ping` returns PONG
 - [ ] Register a test user through the website → lands in DB
 - [ ] Reverb WebSocket connection succeeds (browser dev tools, network tab → WS)
@@ -835,7 +835,7 @@ If all green → the VPS is production-ready. Welcome to ops.
 
 ### "Connection refused" on Postgres
 - Check Postgres is running: `sudo systemctl status postgresql`
-- Check `pg_hba.conf` allows `local md5` for the `tradify` user
+- Check `pg_hba.conf` allows `local md5` for the `my_tradie` user
 - Check `postgresql.conf` listens on `localhost`
 
 ### Reverb WebSocket failing in browser
@@ -888,7 +888,7 @@ If the VPS dies and you need to start over:
    ```bash
    rclone copy tradify-backups:backups/db-LATEST.sql.gz /tmp/
    gunzip /tmp/db-LATEST.sql.gz
-   PGPASSWORD=... psql -h 127.0.0.1 -U tradify tradify < /tmp/db-LATEST.sql
+   PGPASSWORD=... psql -h 127.0.0.1 -U my_tradie my_tradie < /tmp/db-LATEST.sql
    ```
 4. Restore files:
    ```bash
