@@ -124,7 +124,7 @@ tradie_on_the_way
 A `JobStatusTransition` action class must enforce these. Any non-listed transition throws `InvalidStatusTransitionException`.
 
 ```php
-// app/Domain/Jobs/JobStatusTransition.php
+// app/Services/JobStatusTransition.php
 public const ALLOWED = [
     'pending_dispatch' => ['offered', 'cancelled'],
     'offered'          => ['assigned', 'pending_dispatch' /* retry round */, 'cancelled'],
@@ -200,7 +200,7 @@ Tradie A offered first. If they decline/expire, Tradie B next.
 
 ### 5.3 The scoring function (reference implementation)
 
-Lives in `app/Domain/Dispatch/TradieScorer.php`. Pure function, unit-tested exhaustively.
+Lives in `app/Services/TradieScorer.php`. Pure function, unit-tested exhaustively.
 
 ```php
 final class TradieScorer

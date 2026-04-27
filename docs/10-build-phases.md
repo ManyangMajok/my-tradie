@@ -246,7 +246,7 @@ Before declaring Phase 1 done and opening Phase 2, the following ALL must be tru
 - [ ] The 7 critical path steps (see §0) work end-to-end without manual intervention.
 - [ ] All docs have been kept current.
 - [ ] All `DECISION REQUIRED` items affecting MVP have been resolved and docs updated.
-- [ ] Full test suite has >80% line coverage on `app/Domain/*`.
+- [ ] Full test suite has >80% line coverage on `app/Actions/` and `app/Services/`.
 - [ ] Production deployment via `deploy/deploy.sh` succeeds from a clean git push on `main`.
 - [ ] At least 5 internal test users have run through the critical path without the team touching the DB.
 - [ ] Sentry has been quiet for 48h after a soft-launch cohort.

@@ -464,27 +464,23 @@ Full detail in `09-development-guide.md`. High-level here so architecture is und
 
 ```
 app/
-├── Actions/                  # Single-purpose action classes (DispatchJobAction, etc.)
+├── Actions/                  # Single-purpose action classes (DispatchJobAction, AcceptOfferAction, etc.)
 ├── Console/                  # Artisan commands + schedule
-├── Domain/                   # Business logic organised by bounded context
-│   ├── Dispatch/             # Scoring, offer creation, state transitions
-│   ├── Jobs/                 # Job lifecycle
-│   ├── Members/
-│   ├── Tradies/
-│   └── Billing/              # Subscription logic wrapping Cashier
+├── Enums/                    # PHP backed enums for every Postgres enum type
 ├── Events/                   # Broadcasted events (JobStatusChanged, etc.)
 ├── Http/
 │   ├── Controllers/
 │   ├── Middleware/
 │   ├── Requests/             # Form Request validation
 │   └── Resources/            # API resources (for Phase 2 API)
-├── Jobs/                     # Queue jobs (DispatchJobToTradies, ExpireOffer, etc.)
+├── Jobs/                     # Queue jobs (AdvanceToNextRank, ExpireOffer, etc.)
 ├── Listeners/
 ├── Models/
 ├── Notifications/            # Laravel notifications (multi-channel)
 ├── Policies/
 ├── Providers/
-└── Services/                 # Thin wrappers over external APIs (TwilioSms, etc.)
+├── Services/                 # Domain services + external API wrappers (TradieScorer, TwilioSms, etc.)
+└── Support/                  # DTOs and value objects (ScoringContext, EligibleTradie)
 
 resources/
 ├── js/

@@ -8,40 +8,28 @@
 
 ```
 app/
-├── Actions/                         # Thin, stateless action classes (one public method: execute/handle)
+├── Actions/                         # Single-purpose action classes (one public method: execute/handle)
+│   ├── DispatchJobAction.php
+│   ├── AcceptOfferAction.php
+│   ├── DeclineOfferAction.php
+│   ├── CompleteJobAction.php
+│   ├── CancelJobAction.php
+│   ├── SubmitReviewAction.php
+│   ├── RegisterMemberAction.php
+│   ├── AddPropertyAction.php
+│   ├── SubmitTradieApplicationAction.php
+│   ├── ApproveTradieAction.php
+│   ├── SuspendTradieAction.php
+│   ├── StartSubscriptionAction.php
+│   ├── CancelSubscriptionAction.php
+│   └── ApplySubscriptionWebhookEvent.php
 ├── Console/
 │   ├── Commands/
 │   │   ├── SweepExpiredOffers.php
 │   │   ├── AutoConfirmStaleJobs.php
 │   │   └── RebuildDailyPerformance.php
 │   └── Kernel.php                   # Schedule definitions
-├── Domain/                          # Business logic, organised by bounded context
-│   ├── Dispatch/
-│   │   ├── DispatchJobAction.php
-│   │   ├── AcceptOfferAction.php
-│   │   ├── DeclineOfferAction.php
-│   │   ├── AdvanceToNextRank.php    # Queue job
-│   │   ├── ExpireOffer.php          # Queue job
-│   │   ├── TradieScorer.php
-│   │   ├── ScoringContext.php
-│   │   ├── EligibleTradie.php       # DTO
-│   │   └── EligibleTradiesQuery.php
-│   ├── Jobs/
-│   │   ├── JobStatusTransition.php
-│   │   ├── CompleteJobAction.php
-│   │   ├── CancelJobAction.php
-│   │   └── SubmitReviewAction.php
-│   ├── Members/
-│   │   ├── RegisterMemberAction.php
-│   │   └── AddPropertyAction.php
-│   ├── Tradies/
-│   │   ├── SubmitTradieApplicationAction.php
-│   │   ├── ApproveTradieAction.php
-│   │   └── SuspendTradieAction.php
-│   └── Billing/
-│       ├── StartSubscriptionAction.php
-│       ├── CancelSubscriptionAction.php
-│       └── ApplySubscriptionWebhookEvent.php
+├── Enums/                           # PHP backed enums for every Postgres enum type
 ├── Events/
 │   ├── JobStatusChanged.php
 │   ├── LeadOffered.php
@@ -74,7 +62,9 @@ app/
 │       ├── JobPublicResource.php
 │       ├── JobOfferResource.php
 │       └── TradieCompanySummary.php
-├── Jobs/                            # Queue jobs (not "business jobs")
+├── Jobs/                            # Queue jobs (not business operations — those live in Actions/)
+│   ├── AdvanceToNextRank.php        # Dispatch round progression
+│   ├── ExpireOffer.php
 │   ├── SendLeadNotification.php
 │   ├── NotifyMemberAssigned.php
 │   ├── ProcessStripeWebhookEvent.php
@@ -124,9 +114,15 @@ app/
 │   ├── BroadcastServiceProvider.php
 │   ├── EventServiceProvider.php
 │   └── NotificationServiceProvider.php  # Twilio channel binding
-└── Services/                        # Thin wrappers over external APIs
+├── Support/                         # DTOs, value objects, utility classes
+│   ├── ScoringContext.php           # DTO for dispatch scoring
+│   └── EligibleTradie.php           # DTO
+└── Services/                        # Multi-step domain services + external API wrappers
+    ├── TradieScorer.php             # Pure scoring function, unit-tested exhaustively
+    ├── EligibleTradiesQuery.php     # Builds the candidate set for a dispatch round
+    ├── JobStatusTransition.php      # Enforces allowed status transitions
     ├── TwilioSmsService.php
-    ├── StripeBillingService.php     # Thin wrapper, but most Stripe work is via Cashier directly
+    ├── StripeBillingService.php     # Thin wrapper; most Stripe work is via Cashier directly
     └── GooglePlacesService.php
 
 bootstrap/
@@ -276,7 +272,7 @@ docker-compose.yml                   # Sail
 
 ## 3. Action class pattern
 
-For any non-trivial business operation, extract to an Action class under `app/Domain/{Context}/`.
+For any non-trivial business operation, extract to an Action class under `app/Actions/`.
 
 **Rules:**
 - One public method, typically named `execute` or `handle`.
@@ -288,7 +284,7 @@ For any non-trivial business operation, extract to an Action class under `app/Do
 **Example:**
 
 ```php
-namespace App\Domain\Dispatch;
+namespace App\Actions;
 
 use App\Models\Job;
 use App\Models\JobOffer;
@@ -443,7 +439,7 @@ public function cancel(Job $job) {
 - Casts: cast everything. Booleans, dates, enums, JSON.
 - Relationships: typed return (`public function property(): BelongsTo`).
 - Scopes: `scopeActive`, `scopeForSuburb` — no inline query fragments in controllers.
-- **No query logic in models beyond simple scopes.** Complex queries belong in dedicated query classes under `app/Domain/{Context}/Queries/`.
+- **No query logic in models beyond simple scopes.** Complex queries belong in dedicated query classes under `app/Services/`.
 
 **Enum casts (Postgres enums):**
 
@@ -474,7 +470,7 @@ Pest (on top of PHPUnit). Use `it()` / `test()` syntax.
 
 ### 7.2 What MUST have tests
 
-- **Every dispatch action** (scoring, acceptance, decline, expiry, round advance). Aim 95%+ coverage on `app/Domain/Dispatch/`.
+- **Every dispatch action** (scoring, acceptance, decline, expiry, round advance). Aim 95%+ coverage on `app/Actions/` and `app/Services/TradieScorer.php`.
 - **Every state transition** through the `JobStatusTransition` class.
 - **Every money calculation** (discount, refund, invoice totals).
 - **Every webhook handler** (Stripe, Twilio, Postmark) — signature verification + event dispatch.
